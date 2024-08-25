@@ -5,9 +5,50 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pedwayz</title>
+    <style>
+      .logo {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        width: 50px;
+        height: 50px;
+      }
+    </style>
   </head>
   <body>
+    <img src="Ghacks__2024/pedview/src/assets/penguin.svg" alt="Logo" class="logo" />
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    <div id="form-container">
+      <input type="text" id="start-point" placeholder="Start Point" />
+      <input type="text" id="end-point" placeholder="End Point" />
+      <button id="submit-button">Submit</button>
+    </div>
+
+    <script>
+      const submitButton = document.getElementById("submit-button");
+      submitButton.addEventListener("click", () => {
+        const startPoint = document.getElementById("start-point").value;
+        const endPoint = document.getElementById("end-point").value;
+
+        // Send POST request to Flask Python site
+        fetch("http://your-flask-python-site.com/endpoint", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ startPoint, endPoint })
+        })
+          .then(response => response.json())
+          .then(data => {
+            // Handle response data
+            console.log(data);
+          })
+          .catch(error => {
+            // Handle error
+            console.error(error);
+          });
+      });
+    </script>
   </body>
 </html>
