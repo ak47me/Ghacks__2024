@@ -11,57 +11,75 @@
         }
     </style>
     <!-- Load the Google Maps JavaScript API -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=API-KEY&libraries=places"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCOEaoGf7V7p-fihZIZz2iuuku42Ug49UM&libraries=places"></script>
 </head>
 <body>
     <h1>Google Maps Shortest Route Directions</h1>
-    <div>
-        <label for="start-location">Start Location:</label>
-        <input type="text" id="start-location" placeholder="Enter start location">
-        <br>
-        <label for="end-location">End Location:</label>
-        <input type="text" id="end-location" placeholder="Enter end location">
-        <br>
-        <button id="generate-map">Generate Map</button>
-    </div>
     <div id="map"></div>
 
     <script>
         let map;
         let directionsService;
-        let directionsRenderer;
+        let directionsRenderer1;
+        let directionsRenderer2;
+        let pathPolyline;
 
         // Initialize and display the map
         function initMap() {
             const center = { lat: 53.5250, lng: -113.5212 };
             map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 13,
+                zoom: 14,  // Default zoom level
                 center: center
             });
 
             directionsService = new google.maps.DirectionsService();
-            directionsRenderer = new google.maps.DirectionsRenderer({ map: map });
+            directionsRenderer1 = new google.maps.DirectionsRenderer({ map: map });
+            directionsRenderer2 = new google.maps.DirectionsRenderer({ map: map });
 
-            document.getElementById('generate-map').addEventListener('click', () => {
-                const start = document.getElementById('start-location').value;
-                const end = document.getElementById('end-location').value;
+            // Fetch coordinates for the shortest routes
+            fetch('http://127.0.0.1:5000/api/coordinates/start')
+                .then(response => response.json())
+                .then(data => {
+                    const start = new google.maps.LatLng(data.start[0], data.start[1]);
+                    const end = new google.maps.LatLng(data.end[0], data.end[1]);
+                    calculateAndDisplayRoute(start, end, directionsRenderer1);
+                })
+                .catch(error => {
+                    console.error('Error fetching start coordinates:', error);
+                });
 
-                // Validate user input
-                if (!start || !end) {
-                    alert('Please enter both start and end locations.');
-                    return;
-                }
+            fetch('http://127.0.0.1:5000/api/coordinates/end')
+                .then(response => response.json())
+                .then(data => {
+                    const start = new google.maps.LatLng(data.start[0], data.start[1]);
+                    const end = new google.maps.LatLng(data.end[0], data.end[1]);
+                    calculateAndDisplayRoute(start, end, directionsRenderer2);
+                })
+                .catch(error => {
+                    console.error('Error fetching end coordinates:', error);
+                });
 
-                calculateAndDisplayRoute(start, end);
-            });
+            // Fetch path coordinates and display on the map
+            fetch('http://127.0.0.1:5000/api/path')
+                .then(response => response.json())
+                .then(data => {
+                    const pathCoordinates = data.path.map(coord => ({
+                        lat: coord[0],
+                        lng: coord[1]
+                    }));
+                    drawPath(pathCoordinates);
+                })
+                .catch(error => {
+                    console.error('Error fetching path coordinates:', error);
+                });
         }
 
         // Function to calculate and display the shortest route
-        function calculateAndDisplayRoute(start, end) {
+        function calculateAndDisplayRoute(start, end, directionsRenderer) {
             const request = {
                 origin: start,
                 destination: end,
-                travelMode: google.maps.TravelMode.DRIVING
+                travelMode: google.maps.TravelMode.WALKING
             };
 
             directionsService.route(request, (response, status) => {
@@ -71,6 +89,22 @@
                     alert('Directions request failed due to ' + status);
                 }
             });
+        }
+
+        // Function to draw the path on the map
+        function drawPath(pathCoordinates) {
+            if (pathPolyline) {
+                pathPolyline.setMap(null); // Remove previous path if any
+            }
+
+            pathPolyline = new google.maps.Polyline({
+                path: pathCoordinates,
+                geodesic: true,
+                strokeColor: '#FF0000',
+                strokeOpacity: 1.0,
+                strokeWeight: 2
+            });
+            pathPolyline.setMap(map);
         }
 
         // Initialize the map on window load

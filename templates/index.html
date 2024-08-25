@@ -84,7 +84,7 @@
         const longitude2 = document.getElementById("longitude2").value;
 
         // Send POST request to Flask Python site
-        fetch("http://your-flask-python-site.com/endpoint", {
+        fetch("http://127.0.0.1:5000/api/coordinates", { // Update URL to match Flask endpoint
           method: "POST",
           headers: {
             "Content-Type": "application/json"
