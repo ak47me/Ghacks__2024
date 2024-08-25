@@ -1,12 +1,106 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>University of Alberta Pedways</title>
-</head>
-<body>
-    <h1>Custom Pedways Map</h1>
-    <iframe width="100%" height="600" frameborder="0" scrolling="no" 
-            allowfullscreen 
-            src="https://www.google.com/maps/d/viewer?mid=1BUFc9HbtTR6bmTILd0xHM_sR4OmWjvQ&femb=1&ll=53.526303834893994%2C-113.52535115204802&z=16"></iframe>
-</body>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pedwayz</title>
+    <!-- Import the latest Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+      .logo {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        width: 50px;
+        height: 50px;
+      }
+
+      .input-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px;
+      }
+
+      .input-group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0 20px;
+      }
+
+      .input-group input {
+        margin: 5px 0;
+        padding: 10px;
+        width: 150px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      .submit-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 40px;
+      }
+
+      .submit-container button {
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .submit-container button:hover {
+        background-color: #45a049;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100">
+    <img src="{{ url_for('static', filename='images/Penguin_full_logo.svg') }}" alt="Logo" class="logo" />
+
+    <div class="input-container">
+      <div class="input-group">
+        <input type="text" id="latitude1" placeholder="Latitude 1" class="border border-gray-300 p-2 rounded"/>
+        <input type="text" id="longitude1" placeholder="Longitude 1" class="border border-gray-300 p-2 rounded"/>
+      </div>
+      <div class="input-group">
+        <input type="text" id="latitude2" placeholder="Latitude 2" class="border border-gray-300 p-2 rounded"/>
+        <input type="text" id="longitude2" placeholder="Longitude 2" class="border border-gray-300 p-2 rounded"/>
+      </div>
+    </div>
+
+    <div class="submit-container">
+      <button id="submit-button" class="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600">Submit</button>
+    </div>
+
+    <script>
+      const submitButton = document.getElementById("submit-button");
+      submitButton.addEventListener("click", () => {
+        const latitude1 = document.getElementById("latitude1").value;
+        const longitude1 = document.getElementById("longitude1").value;
+        const latitude2 = document.getElementById("latitude2").value;
+        const longitude2 = document.getElementById("longitude2").value;
+
+        // Send POST request to Flask Python site
+        fetch("http://your-flask-python-site.com/endpoint", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ latitude1, longitude1, latitude2, longitude2 })
+        })
+          .then(response => response.json())
+          .then(data => {
+            // Handle response data
+            console.log(data);
+          })
+          .catch(error => {
+            // Handle error
+            console.error(error);
+          });
+      });
+    </script>
+  </body>
 </html>
