@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Maps Shortest Route Directions</title>
+    <style>
+        #map {
+            height: 600px;
+            width: 100%;
+        }
+    </style>
+    <!-- Load the Google Maps JavaScript API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCOEaoGf7V7p-fihZIZz2iuuku42Ug49UM&libraries=places"></script>
+</head>
+<body>
+    <h1>Google Maps Shortest Route Directions</h1>
+    <div>
+        <label for="start-location">Start Location:</label>
+        <input type="text" id="start-location" placeholder="Enter start location">
+        <br>
+        <label for="end-location">End Location:</label>
+        <input type="text" id="end-location" placeholder="Enter end location">
+        <br>
+        <button id="generate-map">Generate Map</button>
+    </div>
+    <div id="map"></div>
+
+    <script>
+        let map;
+        let directionsService;
+        let directionsRenderer;
+
+        // Initialize and display the map
+        function initMap() {
+            const center = { lat: 53.5250, lng: -113.5212 };
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 13,
+                center: center
+            });
+
+            directionsService = new google.maps.DirectionsService();
+            directionsRenderer = new google.maps.DirectionsRenderer({ map: map });
+
+            document.getElementById('generate-map').addEventListener('click', () => {
+                const start = document.getElementById('start-location').value;
+                const end = document.getElementById('end-location').value;
+
+                // Validate user input
+                if (!start || !end) {
+                    alert('Please enter both start and end locations.');
+                    return;
+                }
+
+                calculateAndDisplayRoute(start, end);
+            });
+        }
+
+        // Function to calculate and display the shortest route
+        function calculateAndDisplayRoute(start, end) {
+            const request = {
+                origin: start,
+                destination: end,
+                travelMode: google.maps.TravelMode.DRIVING
+            };
+
+            directionsService.route(request, (response, status) => {
+                if (status === google.maps.DirectionsStatus.OK) {
+                    directionsRenderer.setDirections(response);
+                } else {
+                    alert('Directions request failed due to ' + status);
+                }
+            });
+        }
+
+        // Initialize the map on window load
+        window.onload = initMap;
+    </script>
+</body>
+</html>
