@@ -15,7 +15,7 @@ def gpsmkbsdk():
 coords = get_gps_coordinates()
 print(f"Coordinates: {coords}")
 
-""from flask import Flask, request, jsonify
+'''from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
@@ -27,5 +27,5 @@ def location():
     return jsonify({'latitude': latitude, 'longitude': longitude})
 
 if __name__ == '__main__':
-    app.run()""
+    app.run()'''
     
