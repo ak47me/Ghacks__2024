@@ -4,7 +4,7 @@ from flask_cors import CORS
 import networkx as nx
 from geopy.distance import geodesic
 from gps3 import gps3
-
+from geopy.geocoders import Nominatim
 
 
 
@@ -17,34 +17,6 @@ points = {
             "properties": {"indoor": True},
             "geometry": {
                 "coordinates": [
-                    # [-113.52122913673706, 53.52501394756737],
-                    # [-113.52072060360172, 53.52501714929542],
-                    # [-113.52076956461727, 53.52749981891861],
-                    # [-113.52245999968656, 53.52748874336393],
-                    # [-113.52250118998037, 53.52774166970113],
-                    # [-113.52180141396458, 53.52776674936845],
-                    # [-113.52144016207536, 53.52819492073496],
-                    # [-113.52366013697306, 53.52500376534286],
-                    # [-113.52348994765711, 53.52545758339812],
-                    # [-113.52420143423929, 53.52524104516334],
-                    # [-113.52473891745484, 53.52524724666702],
-                    # [-113.52471219465674, 53.52556226497205],
-                    # [-113.524719215875, 53.52602161305447],
-                    # [-113.5240203595364, 53.52601851366529],
-                    # [-113.52348938972247, 53.52605431729208],
-                    # [-113.52472183316128, 53.526019256057026],
-                    # [-113.52474825039536, 53.52649921160733],
-                    # [-113.52477352830454, 53.527243381822984],
-                    # [-113.52482665299999, 53.528064289535536],
-                    # [-113.52484022744565, 53.528231300655534],
-                    # [-113.52562016493502, 53.52819435619119],
-                    # [-113.52996818972387, 53.527373472361944],
-                    # [-113.52954492268842, 53.527095295044774],
-                    # [-113.52922538969224, 53.526702212783846],
-                    # [-113.52927240527652, 53.52635337477486],
-                    # [-113.5293247013037, 53.52597989301563],
-                    # [-113.5277973268176, 53.52606598703818],
-                    # [-113.52783785722002, 53.52558920720156]
                     [
                         -113.52861715675292,
                         53.5274560962425
@@ -261,6 +233,16 @@ def required_points(start_coords, end_coords):
     return path_coords
 
 
+def get_lat_long(start):
+    loc = Nominatim(user_agent="Geopy Library")
+    getLoc1 = loc.geocode(start)
+    if getLoc1:
+        return {"latitude": getLoc1.latitude, "longitude": getLoc1.longitude}
+    else:
+        print("Location not found")
+        return None
+
+
 start_coords = (53.528206598119596, -113.52927950143817)
 end_coords = (53.528204362561894, -113.52135165224719)
 
@@ -298,10 +280,15 @@ def get_path():
 @app.route('/api/coordinates', methods=['POST'])
 def receive_coordinates():
     data = request.json
-    latitude1 = data.get('latitude1')
-    longitude1 = data.get('longitude1')
-    latitude2 = data.get('latitude2')
-    longitude2 = data.get('longitude2')
+    start = data.get("start")
+    end = data.get("end")
+    start_coord = get_lat_long(start)
+    end_coord = get_lat_long(end)
+    latitude1 = start_coord["latitude"]
+    longitude1 = start_coord["longitude"]
+    latitude2 = end_coord["latitude"]
+    longitude2 = end_coord["longitude"]
+
     
     # Recalculate the path using the new coordinates
     start_coords = (latitude1, longitude1)

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="styles.css" rel="stylesheet">
+  <title>Pedview</title>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCOEaoGf7V7p-fihZIZz2iuuku42Ug49UM&libraries=places"></script>
+</head>
+<body>
+  <div class="flex flex-col items-center justify-center h-screen">
+    <div class="logo-container">
+      <div class="logo-left"></div>
+      <div class="logo-right"></div>
+    </div>
+    
+    <div class="homepage-content">
+      <img src="images/Penguin_logo.svg" alt="Pedview Logo" class="logo"  />
+        <div class="content">
+          
+          <h1 class="text-5xl font-extrabold mb-4 mt-4 drop-shadow-lg">Welcome to Pedview</h1>
+          <p class="text-xl mb-8 max-w-2xl text-center">
+              Navigate Edmonton’s winter with ease using our map that combines pedways and main roads, keeping you warm and safe.
+          </p>
+          <button
+              class="bg-gradient-to-r from-blue-900 to-indigo-700 text-white font-semibold py-3 px-6 rounded-full shadow-lg hover:from-indigo-700 hover:to-blue-900 transition duration-300"
+              onclick="document.getElementById('latlong').scrollIntoView({ behavior: 'smooth', block: 'start' })">
+              Go to Search
+          </button>
+        </div>
+    </div>
+  </div>
+
+  <div id="latlong" class="search flex flex-col items-center justify-center h-screen">
+    <div class="content">
+      <h1 class="text-5xl font-extrabold mb-4 mt-6 drop-shadow-lg">Search for a Location</h1>
+      <p class="text-xl mb-8 max-w-2xl text-center">
+          Enter your start and end location to find the nearest pedway.
+      </p>
+      <div class="input-container">
+        <div class="input-group">
+          <label for="from" class="text-lg">From</label>
+          <input type="text" id="from" class="rounded-lg border-gray-300 text-dark text-black" />
+        </div>
+        <div class="input-group mt-4">
+          <label for="to" class="text-lg">To</label>
+          <input type="text" id="to" class="rounded-lg border-gray-300 text-dark text-black" />
+        </div>
+      </div>
+      
+      <div class="submit-container mt-6" id="submit">
+        <button
+            class="bg-gradient-to-r from-blue-900 to-indigo-700 text-white font-semibold py-3 px-6 rounded-full shadow-lg hover:from-indigo-700 hover:to-blue-900 transition duration-300"
+            >
+            Find Pedway
+        </button>
+      </div>
+    </div>
+  </div>
+  <div id="map" class="map"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
